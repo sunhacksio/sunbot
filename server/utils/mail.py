@@ -1,13 +1,12 @@
 import boto3
 from botocore.exceptions import ClientError
 from flask import render_template
+import os
 
-SENDER = "sunhacks team <team@sunhacks.io>"
-AWS_REGION = "us-west-2"
 CHARSET = "UTF-8"
 
 def send_mail(recipient, subject, body_html, body_text):
-    client = boto3.client('ses',region_name=AWS_REGION)
+    client = boto3.client('ses',region_name=os.getenv("AWS_REGION"))
     try:
         response = client.send_email(
             Destination={
@@ -31,7 +30,7 @@ def send_mail(recipient, subject, body_html, body_text):
                     'Data': subject,
                 },
             },
-            Source=SENDER,
+            Source = os.getenv("AWS_SENDER_EMAIL"),
         )
     except ClientError as e:
         print(e.response['Error']['Message'])

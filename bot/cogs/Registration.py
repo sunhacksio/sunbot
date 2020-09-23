@@ -35,7 +35,7 @@ class Registration(commands.Cog):
                 "discriminator": ctx.author.discriminator
             }
             async with session.post('http://127.0.0.1:5000/api/discord/verify', params=params) as resp:
-                if resp.status == 200:
+                if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
                 else:
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")
@@ -66,7 +66,7 @@ class Registration(commands.Cog):
                 "id" : ctx.author.id
             }
             async with session.post('http://127.0.0.1:5000/api/discord/confirm', params=params) as resp:
-                if resp.status == 200:
+                if resp.status == 201:
                     await ctx.send("You're all set! Welcome to sunhacks!")
                 else:
                     raise commands.BadArgument(message="Could not confirm your email. Please try again later.")

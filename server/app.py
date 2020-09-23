@@ -7,6 +7,8 @@ from models import db, Registration, Hacker
 from utils import mail
 import datetime
 import secrets
+import dotenv
+config = dotenv.load_dotenv()
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -63,10 +65,10 @@ def start_verification():
         query = Registration.update(hacker_discord = hacker).where(Registration.email == email)
 
         # Email hacker!
-        response = mail.send_verification_email(entry[0], hacker.verification)
+        response = mail.send_verification_email(entries[0], hacker.verification)
         if response:
             res = jsonify({
-                "status" : "Email sent!"
+                "status" : "Email sent!",
                 "code" : 0
             })
             res.status_code = 201
@@ -119,9 +121,9 @@ def verify():
 
     if code == hacker.verification and datetime.datetime.now() < hacker.verification_expiration:
         hacker.verified = True
-        hacker.save()
+        # hacker.save()
         res = jsonify({
-            "status" : "Hacker verified"
+            "status" : "Hacker verified",
             "code" : 0
         })
         res.status_code = 201
