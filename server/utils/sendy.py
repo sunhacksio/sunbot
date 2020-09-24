@@ -276,4 +276,4 @@ def add_to_mailing_list(reg):
         'State' : reg.state
     }
     r = requests.post(os.getenv("SENDY_URL"),data=payload)
-    return r
+    return r.status_code
