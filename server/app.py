@@ -1,13 +1,18 @@
 import os
+import datetime
+import secrets
+import dotenv
+import json
 
 from flask import Flask, jsonify, request, render_template
 from playhouse.flask_utils import FlaskDB
 from peewee import *
+
 from models import db, Registration, Hacker
 from utils import mail
-import datetime
-import secrets
-import dotenv
+from utils import typeform
+from utils import sendy
+
 config = dotenv.load_dotenv()
 
 app = Flask(__name__)
@@ -15,10 +20,46 @@ app.config.from_object(__name__)
 app.config['DEBUG'] = True
 
 app.config['DATABASE'] = {
-    'name': 'sunhacks.db',
+    'name': 'test.db',
     'engine': 'peewee.SqliteDatabase',
 }
 db.init_app(app)
+
+@app.route('/api/typeform/webhook', methods=['POST'])
+def submit_entry():
+    if typeform.authorize(request.headers["typeform-signature"],request.data):
+        event = request.json
+        vals = typeform.parse_responses(event)
+        try:
+            reg, _ = Registration.get_or_create(**vals)
+        except:
+            res = jsonify({
+                "error" : "Registration not recorded",
+                "code" : 1
+            })
+            res.status_code = 409
+            return res
+        r = sendy.add_to_mailing_list(reg)
+        if r == 200:
+            res = jsonify({
+                "status" : "Registration recorded",
+                "code" : 0
+            })
+            res.status_code = r.status_code
+            return res
+        else:
+            res = jsonify({
+                "error" : "Registered but unable to send email",
+                "code" : 3
+            })
+            res.status_code = 501
+            return res
+    res = jsonify({
+        "error" : "Unauthorized",
+        "code" : 2
+    })
+    res.status_code = 401
+    return res
 
 @app.route('/api/discord/verify', methods=['POST'])
 def start_verification():
@@ -136,4 +177,5 @@ def verify():
     return res
 
 if __name__ == '__main__':
+    db.database.create_tables([Registration, Hacker])
     app.run()
