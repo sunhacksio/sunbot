@@ -176,7 +176,7 @@ def verify():
     res.status_code = 403
     return res
 
-@app.route('/api/test', methods['GET'])
+@app.route('/api/test', methods=['GET'])
 def test():
     return jsonify("test")
 
