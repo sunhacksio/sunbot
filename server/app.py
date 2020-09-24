@@ -20,7 +20,7 @@ app.config.from_object(__name__)
 app.config['DEBUG'] = True
 
 app.config['DATABASE'] = {
-    'name': 'test.db',
+    'name': 'sunhacks.db',
     'engine': 'peewee.SqliteDatabase',
 }
 db.init_app(app)
@@ -175,6 +175,10 @@ def verify():
     })
     res.status_code = 403
     return res
+
+@app.route('/api/test', methods['GET'])
+def test():
+    return jsonify("test")
 
 if __name__ == '__main__':
     db.database.create_tables([Registration, Hacker])

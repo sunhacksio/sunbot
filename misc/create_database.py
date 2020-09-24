@@ -130,7 +130,7 @@ class Response(Model):
     terms_and_conditions = BooleanField(default = False, verbose_name = "MLH Terms and Conditions")
     start_time = DateTimeField(verbose_name = "Typeform Start Time")
     submit_time = DateTimeField(verbose_name = "Typeform Submission Time")
-    network_id = CharField(verbose_name = "Typeform Network ID")
+    network_id = CharField(verbose_name = "Typeform Network ID", null = True)
     hacker_discord = ForeignKeyField(Hacker, backref="responses", null = True)
 
     class Meta:
