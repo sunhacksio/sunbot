@@ -32,7 +32,7 @@ def submit_entry():
         event = request.json
         vals = typeform.parse_responses(event)
         try:
-            reg = Registration.create(**vals)
+            reg, _ = Registration.get_or_create(**vals)
         except:
             res = jsonify({
                 "error" : "Registration not recorded",
