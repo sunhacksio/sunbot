@@ -20,19 +20,18 @@ class Mentor(commands.Cog):
         guild = self.bot.get_guild(self.guild)
         self.invites = await guild.invites()
         self.roles = [guild.get_role(role) for role in self.role_ids]
+        print("[MENTOR] Setup Mentor Check-in!")
 
     @commands.Cog.listener()
     async def on_member_join(self,member):
-        print(member.name)
         before = self.invites
         after = await member.guild.invites()
         for invite in before:
             if invite.uses < self.find_invite_by_code(after, invite.code).uses:
-                print(invite.code)
                 if invite.code == self.invite_code:
                     await member.add_roles(*self.roles)
                     await member.send("Thanks for joining as a mentor! If you have any questions reach out to anyone with the `organizer` role!")
-                    print(f"Member {member.name} Joined as mentor")
+                    print(f"[MENTOR] Member {member.name}#{member.discriminator} joined as mentor")
                 self.invites = after
                 return True
 

@@ -18,6 +18,7 @@ class Registration(commands.Cog):
     async def on_ready(self):
         self.guild = self.bot.get_guild(self.guild_id)
         self.roles = [self.guild.get_role(role) for role in self.role_ids]
+        print("Setup Registration check-in")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
