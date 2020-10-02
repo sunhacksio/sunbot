@@ -11,7 +11,7 @@ class TypeformWebhook(Resource):
             event = request.json
             vals = typeform.parse_responses(event)
             try:
-                reg, _  = Registration.create(**vals)
+                reg  = Registration.create(**vals)
             except:
                 traceback.print_exc()
                 abort(409, message = "Registration not recorded")
