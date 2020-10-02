@@ -24,10 +24,12 @@ class Mentor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self,member):
+        print(member.name)
         before = self.invites
         after = await member.guild.invites()
         for invite in before:
             if invite.uses < self.find_invite_by_code(after, invite.code).uses:
+                print(invite.code)
                 if invite.code == self.invite_code:
                     await member.add_roles(*self.roles)
                     await member.send("Thanks for joining as a mentor! If you have any questions reach out to anyone with the `organizer` role!")
