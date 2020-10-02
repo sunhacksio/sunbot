@@ -3,7 +3,7 @@ import discord
 import aiohttp
 import os
 
-SERVER = "http://127.0.0.1:5000/"
+SERVER = os.getenv("SERVER")
 SECRET = os.getenv("SUNBOT_SECRET")
 
 
@@ -138,9 +138,7 @@ class Voting(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.message_id == self.start_vote:
-            print(payload.emoji.name == "🗳️")
             if payload.emoji.name == "🗳️":
-                print("verified")
                 member = payload.member
                 # Check if hacker checked in!
                 res = await self.get_req("discord/verified",{"id" : member.id})

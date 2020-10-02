@@ -3,7 +3,7 @@ import discord
 import aiohttp
 import os
 
-SERVER = "http://127.0.0.1:5000/"
+SERVER = os.getenv("SERVER")
 SECRET = os.getenv("SUNBOT_SECRET")
 
 class Registration(commands.Cog):
@@ -50,7 +50,6 @@ class Registration(commands.Cog):
                 if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
                 else:
-                    print(await resp.text())
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")
 
     @checkin.error
