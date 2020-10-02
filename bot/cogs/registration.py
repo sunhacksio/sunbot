@@ -18,13 +18,14 @@ class Registration(commands.Cog):
     async def on_ready(self):
         self.guild = self.bot.get_guild(self.guild_id)
         self.roles = [self.guild.get_role(role) for role in self.role_ids]
-        print("Setup Registration check-in")
+        print("[REGISTRATION] Setup Registration check-in")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.message_id == self.check_in_id:
             if payload.emoji.name == "☀️":
                 await payload.member.send("Thanks for starting check-in! What email did you use to register? Reply with `!checkin <email>` to confirm your registration. \n \n If you did not register go register at http://links.sunhacks.io/apply and message me with the command after you're done!")
+                print("[REGISTRATION] Starting registration for {payload.member.name}#{payload.member.discriminator}")
 
 
     @commands.command()
@@ -50,7 +51,9 @@ class Registration(commands.Cog):
             async with session.post(SERVER+'/discord/verify', params = params, headers = headers) as resp:
                 if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
+                    print("REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
                 else:
+                    print("[REGISTRATION] Unable to find registration for  {ctx.author.name}#{ctx.author.discriminator}")
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")
 
     @checkin.error
@@ -61,6 +64,7 @@ class Registration(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.send(error)
         else:
+            print("[REGISTRATION] ERROR")
             print(error)
 
 
@@ -85,10 +89,10 @@ class Registration(commands.Cog):
             async with session.post(SERVER+'/discord/confirm', params = params, headers = headers) as resp:
                 if resp.status == 201:
                     member = self.guild.get_member(ctx.author.id)
-                    await member.add_roles(self.roles)
+                    await member.add_roles(*self.roles)
                     await ctx.send("You're all set! Welcome to sunhacks!")
+                    print("[REGISTRATION] Member {ctx.author.name}#{ctx.author.discriminator} joined as Hacker")
                 else:
-                    print(await resp.json())
                     raise commands.BadArgument(message="Could not confirm your email. Please try again later.")
 
 
