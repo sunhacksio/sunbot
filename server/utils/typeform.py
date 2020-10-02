@@ -55,7 +55,9 @@ def parse_legal(field,res):
 
 parse_types = { "short_text" : parse_short_text, "multiple_choice" : parse_multiple_choice, "phone_number" : parse_phone_number, "email" : parse_email, "yes_no" : parse_yes_no, "dropdown" : parse_dropdown, "file_upload" : parse_file_upload, "website" : parse_website, "legal" : parse_legal }
 
-fields = ["first_name", "last_name", "pronouns_he", "pronouns_she", "pronouns_them", "pronouns_other", "first_hack", "phone_number", "email", "school", "school_other", "level_of_study", "level_of_study_other", "undergrad", "undergrad_other", "grad_year", "major", "major_other", "sponsor", "resume_link", "github_link", "linkedin_link", "devpost_link", "personal_link", "gender", "gender_other", "background_indian", "background_asian", "background_black", "background_hispanic", "background_middle_east", "background_hawaii", "background_white", "background_none", "background_other", "country", "state", "swag", "ship_street", "ship_etc", "ship_city", "ship_state", "ship_postal", "ship_country", "shirt", "code_of_conduct", "terms_and_conditions"]
+FIELDS = ["first_name", "last_name", "pronouns_he", "pronouns_she", "pronouns_them", "pronouns_other", "first_hack", "phone_number", "email", "school", "school_other", "level_of_study", "level_of_study_other", "undergrad", "undergrad_other", "grad_year", "major", "major_other", "sponsor", "resume_link", "github_link", "linkedin_link", "devpost_link", "personal_link", "gender", "gender_other", "background_indian", "background_asian", "background_black", "background_hispanic", "background_middle_east", "background_hawaii", "background_white", "background_none", "background_other", "country", "state", "swag", "ship_street", "ship_etc", "ship_city", "ship_state", "ship_postal", "ship_country", "shirt", "code_of_conduct", "terms_and_conditions"]
+
+
 
 def parse_response(field,res):
     assert field["id"] == res["field"]["id"]
@@ -74,7 +76,7 @@ def parse_responses(event):
         else:
             answers.append(vals)
     entry = {}
-    for i, field in enumerate(fields):
+    for i, field in enumerate(FIELDS):
         entry[field] = answers[i]
     entry["id"] = event["event_id"]
     entry["start_time"] = dateutil.parser.parse(form_res["landed_at"])
@@ -86,4 +88,4 @@ def authorize(sig, body):
     # body = body.encode('utf-8')
     sha_name, signature = sig.split('=', 1)
     mac = hmac.new(os.getenv("TYPEFORM_SECRET").encode('utf-8'), msg = body, digestmod = hashlib.sha256)
-    return hmac.compare_digest(base64.b64encode(mac.digest()).decode().encode('utf-8'), signature.encode('utf-8'))
+    return  hmac.compare_digest(base64.b64encode(mac.digest()).decode().encode('utf-8'), signature.encode('utf-8'))

@@ -1,20 +1,28 @@
 from discord.ext import commands
 import discord
 import aiohttp
+import os
 
-SERVER = "https://bot.sunhacks.io"
+SERVER = "http://127.0.0.1:5000/"
+SECRET = os.getenv("SUNBOT_SECRET")
 
 class Registration(commands.Cog):
     """Commands !"""
     def __init__(self, bot):
         self.bot = bot
-        self._last_member = None
-        self.check_in_id = 757675583814762578
+        self.guild_id = 737845782992126032
+        self.role_ids = [750436508871163951, 750435194166706337]
+        self.check_in_id = 761333266518638592
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.guild = self.bot.get_guild(self.guild_id)
+        self.roles = [self.guild.get_role(role) for role in self.role_ids]
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.message_id == self.check_in_id:
-            if payload.emoji.name == "💖":
+            if payload.emoji.name == "☀️":
                 await payload.member.send("Thanks for starting check-in! What email did you use to register? Reply with `!checkin <email>` to confirm your registration. \n \n If you did not register go register at http://links.sunhacks.io/apply and message me with the command after you're done!")
 
 
@@ -36,7 +44,9 @@ class Registration(commands.Cog):
                 "username": ctx.author.name,
                 "discriminator": ctx.author.discriminator
             }
-            async with session.post(SERVER+'/api/discord/verify', params=params) as resp:
+            headers = {"Sunbot-Secret" : SECRET}
+
+            async with session.post(SERVER+'/discord/verify', params = params, headers = headers) as resp:
                 if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
                 else:
@@ -70,10 +80,15 @@ class Registration(commands.Cog):
                 "code" : code,
                 "id" : ctx.author.id
             }
-            async with session.post(SERVER+'/api/discord/confirm', params=params) as resp:
+            headers = {"Sunbot-Secret" : SECRET}
+
+            async with session.post(SERVER+'/discord/confirm', params = params, headers = headers) as resp:
                 if resp.status == 201:
+                    member = self.guild.get_member(ctx.author.id)
+                    await member.add_roles(self.roles)
                     await ctx.send("You're all set! Welcome to sunhacks!")
                 else:
+                    print(await resp.json())
                     raise commands.BadArgument(message="Could not confirm your email. Please try again later.")
 
 
@@ -84,6 +99,8 @@ class Registration(commands.Cog):
                 await ctx.send("You need to specify a verification code: `!verify <code>`")
         elif isinstance(error, commands.BadArgument):
             await ctx.send(error)
+        else:
+            print(error)
 
 
 def setup(bot):
