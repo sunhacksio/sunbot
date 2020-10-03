@@ -27,6 +27,7 @@ app.config['DATABASE'] = {
     'name': 'sunhacks.db',
     'engine': 'peewee.SqliteDatabase',
 }
+
 db.init_app(app)
 db_cli = AppGroup('db')
 app.cli.add_command(db_cli)
@@ -35,7 +36,7 @@ api = Api(app)
 
 @app.before_request
 def discord_check():
-    if "discord" in request.url:
+    if "discord" in request.base_url:
         if os.getenv("SUNBOT_SECRET", None) != request.headers["Sunbot-Secret"]:
             abort(401, message = "API only available to verified requests")
 

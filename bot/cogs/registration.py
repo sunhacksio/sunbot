@@ -51,7 +51,7 @@ class Registration(commands.Cog):
             async with session.post(SERVER+'/discord/verify', params = params, headers = headers) as resp:
                 if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
-                    print(f"REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
+                    print(f"[REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
                 else:
                     print(f"[REGISTRATION] Unable to find registration for  {ctx.author.name}#{ctx.author.discriminator}")
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")

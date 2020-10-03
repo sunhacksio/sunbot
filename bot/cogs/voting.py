@@ -91,7 +91,7 @@ class Voting(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
-        self.start_vote = 761439496431599616
+        self.start_vote = 761769313270890537
 
     async def get_req(self, endpoint, params, data = None, error = ""):
         async with aiohttp.ClientSession() as session:
