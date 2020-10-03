@@ -12,23 +12,18 @@ def parse_multiple_choice(field,res):
     other_flag = "allow_other_choice" in field
     if "allow_multiple_selections" in field:
         if other_flag:
-            other = ""
+            other = res["choices"]["other"] if "other" in res["choices"] else ""
         checked = [False for i in labels]
         for choice in res["choices"]["labels"]:
-            try:
-                i = labels.index(choice)
-                checked[i] = True
-            except ValueError:
-                if other_flag:
-                    other = choice
+            i = labels.index(choice)
+            checked[i] = True
         return checked + ([other] if other_flag else [])
     else:
-        choice = res["choice"]["label"]
         if other_flag:
-            if choice in labels:
-                return [choice, ""]
+            if "label" in res["choice"]:
+                return [res["choice"]["label"],""]
             else:
-                return ["",choice]
+                return ["",res["choice"]["other"]]
         else:
             return res["choice"]["label"]
 
