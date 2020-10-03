@@ -25,7 +25,7 @@ class Registration(commands.Cog):
         if payload.message_id == self.check_in_id:
             if payload.emoji.name == "☀️":
                 await payload.member.send("Thanks for starting check-in! What email did you use to register? Reply with `!checkin <email>` to confirm your registration. \n \n If you did not register go register at http://links.sunhacks.io/apply and message me with the command after you're done!")
-                print("[REGISTRATION] Starting registration for {payload.member.name}#{payload.member.discriminator}")
+                print(f"[REGISTRATION] Starting registration for {payload.member.name}#{payload.member.discriminator}")
 
 
     @commands.command()
@@ -51,9 +51,9 @@ class Registration(commands.Cog):
             async with session.post(SERVER+'/discord/verify', params = params, headers = headers) as resp:
                 if resp.status == 201:
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
-                    print("REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
+                    print(f"REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
                 else:
-                    print("[REGISTRATION] Unable to find registration for  {ctx.author.name}#{ctx.author.discriminator}")
+                    print(f"[REGISTRATION] Unable to find registration for  {ctx.author.name}#{ctx.author.discriminator}")
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")
 
     @checkin.error
@@ -91,7 +91,7 @@ class Registration(commands.Cog):
                     member = self.guild.get_member(ctx.author.id)
                     await member.add_roles(*self.roles)
                     await ctx.send("You're all set! Welcome to sunhacks!")
-                    print("[REGISTRATION] Member {ctx.author.name}#{ctx.author.discriminator} joined as Hacker")
+                    print(f"[REGISTRATION] Member {ctx.author.name}#{ctx.author.discriminator} joined as Hacker")
                 else:
                     raise commands.BadArgument(message="Could not confirm your email. Please try again later.")
 
