@@ -11,7 +11,11 @@ class TypeformWebhook(Resource):
             event = request.json
             vals = typeform.parse_responses(event)
             try:
-                reg  = Registration.create(**vals)
+                reg = Registration.create(**vals)
+                entries = Registration.select().where(Registration.email == reg.email).order_by(Registration.submit_time)
+                if entries.exists():
+                    reg.hacker_discord = entries[0].hacker_discord
+                    reg.save()
             except:
                 traceback.print_exc()
                 abort(409, message = "Registration not recorded")
