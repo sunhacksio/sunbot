@@ -14,6 +14,8 @@ def parse_multiple_choice(field,res):
         if other_flag:
             other = res["choices"]["other"] if "other" in res["choices"] else ""
         checked = [False for i in labels]
+        if res["choices"]["labels"] == None:
+            return checked + ([other] if other_flag else [])
         for choice in res["choices"]["labels"]:
             i = labels.index(choice)
             checked[i] = True
