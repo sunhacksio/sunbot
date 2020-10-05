@@ -14,6 +14,7 @@ class Mentor(commands.Cog):
         for inv in invite_list:
             if inv.code == code:
                 return inv
+        return None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -27,7 +28,8 @@ class Mentor(commands.Cog):
         before = self.invites
         after = await member.guild.invites()
         for invite in before:
-            if invite != None and invite.uses < self.find_invite_by_code(after, invite.code).uses:
+            code = self.find_invite_by_code(after, invite.code)
+            if code != None and invite.uses < code.uses:
                 if invite.code == self.invite_code:
                     await member.add_roles(*self.roles)
                     await member.send("Thanks for joining as a mentor! If you have any questions reach out to anyone with the `organizer` role!")
