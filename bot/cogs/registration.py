@@ -53,7 +53,10 @@ class Registration(commands.Cog):
                     await ctx.send("Sent a verification code to your email! Please respond with `!verify <code>` to finish checkin")
                     print(f"[REGISTRATION] Sent verification to  {ctx.author.name}#{ctx.author.discriminator}")
                 else:
-                    print(f"[REGISTRATION] Unable to find registration for  {ctx.author.name}#{ctx.author.discriminator}")
+                    if "<" in email:
+                        print(f"[REGISTRATION] {ctx.author.name}#{ctx.author.discriminator} doesn't know how to use angle brackets")
+                        raise commands.BadArgument(message="Unable to send an email to that address! Please remove the angle brackets `<`,`>` from your command.")
+                    print(f"[REGISTRATION] Unable to find registration for {ctx.author.name}#{ctx.author.discriminator}")
                     raise commands.BadArgument(message="Unable to send an email to that address! Make sure it is the same email you used to register.")
 
     @checkin.error
