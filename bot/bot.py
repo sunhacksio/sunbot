@@ -20,5 +20,6 @@ client = commands.Bot(command_prefix="!",help_command=help, intents=intents)
 client.load_extension('cogs.registration')
 client.load_extension('cogs.voting')
 client.load_extension('cogs.mentor')
+client.load_extension('cogs.judge')
 
 client.run(os.getenv("DISCORD_OAUTH"))
