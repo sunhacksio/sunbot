@@ -12,7 +12,7 @@ class Registration(commands.Cog):
         self.bot = bot
         self.guild_id = 737845782992126032
         self.role_ids = [750436508871163951, 750435194166706337]
-        self.check_in_id = 761333266518638592
+        self.check_in_id = 763107863572381717
 
     @commands.Cog.listener()
     async def on_ready(self):
