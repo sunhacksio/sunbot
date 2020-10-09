@@ -5,6 +5,7 @@ from models import Registration, Hacker
 import secrets
 import datetime
 from peewee import DoesNotExist
+from peewee import fn
 
 class Verification(Resource):
     def post(self):
@@ -20,7 +21,7 @@ class Verification(Resource):
             abort(409, message = "Hacker already verified")
 
         # Get all registration entries under that email
-        entries = Registration.select().where(Registration.email == email).order_by(Registration.submit_time)
+        entries = Registration.select().where(fn.Lower(Registration.email) == email.lower()).order_by(Registration.submit_time)
         if entries.exists():
             if entries[0].hacker_discord != None and entries[0].hacker_discord != hacker:
                 abort(409, message = "Registration verification started with another hacker")
