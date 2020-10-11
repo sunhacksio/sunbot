@@ -20,10 +20,6 @@ Comparison voting works by comparing two projects and picking which is better. \
 We will send you one project at a time and you will have to compare this with \
 the previous. You will use emoji reactions to vote on the better project.
 
-If you are shown a project that you feel may have cheated, please use the 🚩 \
-reaction to report it. This will give you a different project to compare with \
-your previous project.
-
 To begin, did you submit a project on Devpost? **React with 👍 or 👎**
 """
 
@@ -213,8 +209,8 @@ class Voting(commands.Cog):
             "table" : proj["table"]
         }
         await member.send(STRF_PROJECT.format(proj))
-        emoji = await self.send_react_req(member, STR_REVIEW_PROJ, ["➡️","🚩"])
-        if emoji == "🚩":
+        emoji = await self.send_react_req(member, STR_REVIEW_PROJ, ["➡️"])
+        if False: #emoji = "🚩":
             report = await self.send_msg_req(member, STRF_FLAG_PROJ.format(proj))
             res = await self.post_req("discord/flagproj", params = params, data = report)
             if res == None:
